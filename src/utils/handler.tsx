@@ -17,7 +17,7 @@ export function handleBaseError(er: any): string {
   if (instanceOfSerializedError(er)) {
     return er.message;
   } else {
-    return er;
+    return er.message;
   }
 
   // //todo: обработать серверную ошибку

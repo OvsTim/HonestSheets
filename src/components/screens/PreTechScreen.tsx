@@ -143,7 +143,9 @@ export default function PreTechScreen({navigation, route}: Props) {
         }}>
         <CheckBox
           value={passed}
-          onChange={event => setPassed(event.nativeEvent.value)}
+          onChange={(event: {
+            nativeEvent: {value: boolean | ((prevState: boolean) => boolean)};
+          }) => setPassed(event.nativeEvent.value)}
         />
         <Text>Дезинфекция проведена</Text>
       </Pressable>

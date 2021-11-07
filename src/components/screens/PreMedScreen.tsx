@@ -131,7 +131,7 @@ export default function PreMedScreen({navigation, route}: Props) {
       <BaseInput
         inputRef={tempRef}
         value={temperature}
-        onTextChanges={term => setTemperature(term)}
+        onTextChanges={term => setTemperature(term.replace(/[^0-9.]/g, ''))}
         styleInput={{}}
         styleContainer={{marginTop: 16}}
         editable={true}
@@ -193,7 +193,9 @@ export default function PreMedScreen({navigation, route}: Props) {
         }}>
         <CheckBox
           value={passed}
-          onChange={event => setPassed(event.nativeEvent.value)}
+          onChange={(event: {
+            nativeEvent: {value: boolean | ((prevState: boolean) => boolean)};
+          }) => setPassed(event.nativeEvent.value)}
         />
         <Text>Пройден тест на алкоголь</Text>
       </Pressable>
