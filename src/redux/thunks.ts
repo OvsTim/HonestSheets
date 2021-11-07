@@ -1,6 +1,15 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
 import * as API from '../API';
 import {handleBaseError} from '../utils/handler';
+import {
+  PostMedCreateCheckup,
+  PostMedEditCheckup,
+  PostTechCreateCheckup,
+  PostTechEditCheckup,
+  PreMedCreateCheckup,
+  PreMedEditCheckup,
+  PreTechCreateCheckup,
+} from '../API';
 
 export const fetchImages = createAsyncThunk(
   'users/fetchByIdStatus',
@@ -74,6 +83,123 @@ export const getEmployeeRequest = createAsyncThunk(
   async (arg: {token: string; id: number}, {rejectWithValue}) => {
     try {
       const response = await API.getEmployee(arg.id, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const preMedCreateRequest = createAsyncThunk(
+  'users/preMedCreateRequest',
+  async (
+    arg: {token: string; data: PreMedCreateCheckup},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.preMedCreate(arg.data, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+export const postMedCreateRequest = createAsyncThunk(
+  'users/postMedCreateRequest',
+  async (
+    arg: {token: string; data: PostMedCreateCheckup},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.postMedCreate(arg.data, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+export const preTechCreateRequest = createAsyncThunk(
+  'users/preTechCreateRequest',
+  async (
+    arg: {token: string; data: PreTechCreateCheckup},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.preTechCreate(arg.data, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+export const postTechCreateRequest = createAsyncThunk(
+  'users/postTechCreateRequest',
+  async (
+    arg: {token: string; data: PostTechCreateCheckup},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.postTechCreate(arg.data, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const preMedEditRequest = createAsyncThunk(
+  'users/preMedEditRequest',
+  async (
+    arg: {token: string; data: PreMedEditCheckup; CheckupID: number},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.preMedEdit(arg.data, arg.token, arg.CheckupID);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const postMedEditRequest = createAsyncThunk(
+  'users/postMedEditRequest',
+  async (
+    arg: {token: string; data: PostMedEditCheckup; CheckupID: number},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.postMedEdit(
+        arg.data,
+        arg.token,
+        arg.CheckupID,
+      );
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const postTechEditRequest = createAsyncThunk(
+  'users/postTechEditRequest',
+  async (
+    arg: {token: string; data: PostTechEditCheckup; CheckupID: number},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.postTechEdit(
+        arg.data,
+        arg.token,
+        arg.CheckupID,
+      );
       return response.data;
     } catch (er) {
       let errorMessage: string = handleBaseError(er);

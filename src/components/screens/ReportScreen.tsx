@@ -1,7 +1,6 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
 import {
   Alert,
-  FlatList,
   Image,
   Pressable,
   StatusBar,
@@ -11,8 +10,7 @@ import {
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
-import {withPressable} from '../_CustomComponents/HOC/withPressable';
-import {RouteProp} from '@react-navigation/native';
+import {RouteProp, useFocusEffect} from '@react-navigation/native';
 import {useAppDispatch, useSelector} from '../../redux';
 import {getReportRequest} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
@@ -25,8 +23,6 @@ type Props = {
   route: RouteProp<AuthStackParamList, 'Report'>;
 };
 
-const Button = withPressable(View);
-
 export default function ReportScreen({navigation, route}: Props) {
   const dispatch = useAppDispatch();
   const token = useSelector<string>(state => state.data.token);
@@ -35,17 +31,19 @@ export default function ReportScreen({navigation, route}: Props) {
   >(state => state.data.currentEmployee);
   const {width} = useWindowDimensions();
   const [report, setReport] = useState<Report | null>(null);
-  //region jsx
 
-  useEffect(() => {
-    dispatch(getReportRequest({id: route.params.id, token}))
-      .then(unwrapResult)
-      .then(res => {
-        console.log('res', res);
-        setReport(res);
-      })
-      .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
-  }, []);
+  //region jsx
+  useFocusEffect(
+    React.useCallback(() => {
+      dispatch(getReportRequest({id: route.params.id, token}))
+        .then(unwrapResult)
+        .then(res => {
+          console.log('res', res);
+          setReport(res);
+        })
+        .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
+    }, []),
+  );
 
   function getTypeName(type: CheckupType) {
     switch (type) {

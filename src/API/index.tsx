@@ -143,6 +143,66 @@ export interface PostTechCreateCheckup {
   waybill: {id: number};
 }
 
+export interface PreMedEditCheckup {
+  checkupData: {
+    bloodPressureDia: string;
+    bloodPressureSys: string;
+    bodyTemperature: string;
+    alcoholTestPassed: boolean;
+  };
+  type: CheckupType;
+  specialist: {
+    id: number;
+    abbreviatedName: string;
+    organization: {id: number; shortName: string};
+  };
+  waybill: {id: number};
+  id: number;
+  dateTimePassed: string;
+}
+
+export interface PostMedEditCheckup {
+  checkupData: {
+    alcoholTestPassed: boolean;
+  };
+  type: CheckupType;
+  specialist: {
+    id: number;
+    abbreviatedName: string;
+    organization: {id: number; shortName: string};
+  };
+  waybill: {id: number};
+  id: number;
+  dateTimePassed: string;
+}
+
+export interface PreTechEditCheckup {
+  checkupData: {desinfected: boolean; odometerData: string};
+
+  type: CheckupType;
+  specialist: {
+    id: number;
+    abbreviatedName: string;
+    organization: {id: number; shortName: string};
+  };
+  waybill: {id: number};
+  id: number;
+  dateTimePassed: string;
+}
+
+export interface PostTechEditCheckup {
+  checkupData: {washed: boolean; odometerData: string};
+  type: CheckupType;
+  specialist: {
+    id: number;
+    abbreviatedName: string;
+    organization: {id: number; shortName: string};
+  };
+  waybill: {id: number};
+  id: number;
+  dateTimePassed: string;
+}
+
 export const base_url = 'https://art.taxi.mos.ru/api';
 export function getImages(url: string) {
   return axios.get<Image[]>(url, {
@@ -181,6 +241,70 @@ export function getReport(id: number, token: string) {
 
 export function getEmployee(id: number, token: string) {
   return axios.get<EmployeeData>(base_url + '/employees/' + id, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function preMedCreate(data: PreMedCreateCheckup, token: string) {
+  return axios.post(base_url + '/checkups/PRE_MED', data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function postMedCreate(data: PostMedCreateCheckup, token: string) {
+  return axios.post(base_url + '/checkups/POST_MED', data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function preTechCreate(data: PreTechCreateCheckup, token: string) {
+  return axios.post(base_url + '/checkups/PRE_TECH', data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function postTechCreate(data: PostTechCreateCheckup, token: string) {
+  return axios.post(base_url + '/checkups/POST_TECH', data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function preMedEdit(
+  data: PreMedEditCheckup,
+  token: string,
+  checkupID: number,
+) {
+  return axios.post(base_url + '/checkups/PRE_MED/' + checkupID, data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function postMedEdit(
+  data: PostMedEditCheckup,
+  token: string,
+  checkupID: number,
+) {
+  return axios.post(base_url + '/checkups/POST_MED/' + checkupID, data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function preTechEdit(
+  data: PreTechEditCheckup,
+  token: string,
+  checkupID: number,
+) {
+  return axios.post(base_url + '/checkups/PRE_TECH/' + checkupID, data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function postTechEdit(
+  data: PostTechEditCheckup,
+  token: string,
+  checkupID: number,
+) {
+  return axios.post(base_url + '/checkups/POST_TECH/' + checkupID, data, {
     headers: {Authorization: token, 'Content-Type': 'application/json'},
   });
 }
