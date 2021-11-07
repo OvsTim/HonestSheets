@@ -9,6 +9,7 @@ import {
   PreMedCreateCheckup,
   PreMedEditCheckup,
   PreTechCreateCheckup,
+  PreTechEditCheckup,
 } from '../API';
 
 export const fetchImages = createAsyncThunk(
@@ -196,6 +197,26 @@ export const postTechEditRequest = createAsyncThunk(
   ) => {
     try {
       const response = await API.postTechEdit(
+        arg.data,
+        arg.token,
+        arg.CheckupID,
+      );
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const preTechEditRequest = createAsyncThunk(
+  'users/preTechEditRequest',
+  async (
+    arg: {token: string; data: PreTechEditCheckup; CheckupID: number},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.preTechEdit(
         arg.data,
         arg.token,
         arg.CheckupID,

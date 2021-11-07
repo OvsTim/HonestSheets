@@ -38,7 +38,7 @@ export default function ReportScreen({navigation, route}: Props) {
       dispatch(getReportRequest({id: route.params.id, token}))
         .then(unwrapResult)
         .then(res => {
-          console.log('res', res);
+          // console.log('res', res);
           setReport(res);
         })
         .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
@@ -104,13 +104,15 @@ export default function ReportScreen({navigation, route}: Props) {
           {(currentEmployee &&
             currentEmployee.employeeType === 'MEDIC' &&
             (type === 'PRE_MED' || type === 'POST_MED')) ||
-            (currentEmployee?.employeeType === 'TECHNICIAN' &&
-              (type === 'PRE_TECH' || type === 'POST_TECH') && (
-                <Image
-                  style={{height: 32, width: 32, tintColor: 'orange'}}
-                  source={require('../../assets/baseline_edit_black_24dp.png')}
-                />
-              ))}
+          (currentEmployee?.employeeType === 'TECHNICIAN' &&
+            (type === 'PRE_TECH' || type === 'POST_TECH')) ? (
+            <Image
+              style={{height: 32, width: 32, tintColor: 'orange'}}
+              source={require('../../assets/baseline_edit_black_24dp.png')}
+            />
+          ) : (
+            <View />
+          )}
         </Pressable>
       );
     } else {
@@ -125,7 +127,8 @@ export default function ReportScreen({navigation, route}: Props) {
               ? null
               : true
           }
-          onPress={() =>
+          onPress={() => {
+            console.log('type', type);
             navigation.navigate(
               type === 'PRE_MED'
                 ? 'PreMed'
@@ -139,8 +142,8 @@ export default function ReportScreen({navigation, route}: Props) {
                 type: 'edit',
                 checkupId: item?.id ? item.id : undefined,
               },
-            )
-          }
+            );
+          }}
           android_ripple={{radius: 200, color: 'gray'}}
           style={{
             borderTopWidth: type === 'PRE_MED' || type === 'POST_MED' ? 1 : 0,
@@ -168,13 +171,15 @@ export default function ReportScreen({navigation, route}: Props) {
           {(currentEmployee &&
             currentEmployee.employeeType === 'MEDIC' &&
             (type === 'PRE_MED' || type === 'POST_MED')) ||
-            (currentEmployee?.employeeType === 'TECHNICIAN' &&
-              (type === 'PRE_TECH' || type === 'POST_TECH') && (
-                <Image
-                  style={{height: 32, width: 32, tintColor: 'orange'}}
-                  source={require('../../assets/baseline_edit_black_24dp.png')}
-                />
-              ))}
+          (currentEmployee?.employeeType === 'TECHNICIAN' &&
+            (type === 'PRE_TECH' || type === 'POST_TECH')) ? (
+            <Image
+              style={{height: 32, width: 32, tintColor: 'orange'}}
+              source={require('../../assets/baseline_edit_black_24dp.png')}
+            />
+          ) : (
+            <View />
+          )}
         </Pressable>
       );
     }
@@ -233,7 +238,7 @@ export default function ReportScreen({navigation, route}: Props) {
         )}
         {renderCheckup(
           report?.checkups.filter(it => it.type === 'POST_TECH')[0],
-          'PRE_TECH',
+          'POST_TECH',
         )}
       </View>
     );

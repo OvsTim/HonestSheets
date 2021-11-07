@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Animated,
   Pressable,
   StatusBar,
@@ -14,8 +15,11 @@ import BaseInput from '../_CustomComponents/BaseInput';
 import CheckBox from '@react-native-community/checkbox';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {RouteProp} from '@react-navigation/native';
-import {useSelector} from '../../redux';
+import {useAppDispatch, useSelector} from '../../redux';
 import {EmployeeData} from '../../API';
+import {preMedCreateRequest, preMedEditRequest} from '../../redux/thunks';
+import {unwrapResult} from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'PreMed'>;
@@ -37,10 +41,85 @@ export default function PreMedScreen({navigation, route}: Props) {
   const employeeData: EmployeeData = useSelector<EmployeeData>(
     state => state.data.employeeData,
   );
+  const dispatch = useAppDispatch();
 
   useEffect(() => {
     console.log('ROUTE', JSON.stringify(route.params));
   }, []);
+
+  function sendRequest() {
+    if (!temperature || !bloodPressureSys || !temperature) {
+      Alert.alert('Ошибка', 'Заполните все поля');
+      return;
+    }
+
+    setLoading(true);
+    if (route.params.type === 'add') {
+      dispatch(
+        preMedCreateRequest({
+          token,
+          data: {
+            type: 'PRE_MED',
+            waybill: {id: route.params.waybillId},
+            specialist: {id: employeeData.id},
+            checkupData: {
+              bloodPressureDia,
+              bloodPressureSys,
+              bodyTemperature: temperature,
+              alcoholTestPassed: passed,
+            },
+          },
+        }),
+      )
+        .then(unwrapResult)
+        .then(_ => {
+          setLoading(false);
+          navigation.goBack();
+        })
+        .catch(er => {
+          setLoading(false);
+
+          Alert.alert('Ошибка', JSON.stringify(er));
+        });
+    } else {
+      dispatch(
+        preMedEditRequest({
+          token,
+          CheckupID: route.params.checkupId ? route.params.checkupId : 0,
+          data: {
+            id: route.params.checkupId ? route.params.checkupId : 0,
+            type: 'PRE_MED',
+            specialist: {
+              id: employeeData.id,
+              abbreviatedName: employeeData.user.abbreviatedName,
+              organization: {
+                id: employeeData.organization.id,
+                shortName: employeeData.organization.shortName,
+              },
+            },
+            checkupData: {
+              bloodPressureDia,
+              bloodPressureSys,
+              bodyTemperature: temperature,
+              alcoholTestPassed: passed,
+            },
+            waybill: {id: route.params.waybillId},
+            dateTimePassed: dayjs(new Date()).format().toString(),
+          },
+        }),
+      )
+        .then(unwrapResult)
+        .then(_ => {
+          setLoading(false);
+          navigation.goBack();
+        })
+        .catch(er => {
+          setLoading(false);
+
+          Alert.alert('Ошибка', JSON.stringify(er));
+        });
+    }
+  }
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -118,7 +197,15 @@ export default function PreMedScreen({navigation, route}: Props) {
         />
         <Text>Пройден тест на алкоголь</Text>
       </Pressable>
-      <BaseButton loading={loading} text={'Сохранить'} onPress={() => {}} />
+      <BaseButton
+        loading={loading}
+        text={'Сохранить'}
+        onPress={() => {
+          if (!loading) {
+            sendRequest();
+          }
+        }}
+      />
     </View>
   );
   //endregion jsx

@@ -1,5 +1,6 @@
 import React, {useEffect, useRef, useState} from 'react';
 import {
+  Alert,
   Pressable,
   StatusBar,
   Text,
@@ -13,8 +14,15 @@ import BaseInput from '../_CustomComponents/BaseInput';
 import CheckBox from '@react-native-community/checkbox';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {RouteProp} from '@react-navigation/native';
-import {useSelector} from '../../redux';
-import {EmployeeData} from '../../API';
+import {useAppDispatch, useSelector} from '../../redux';
+import {EmployeeData, preTechCreate} from '../../API';
+import {
+  postTechEditRequest,
+  preTechCreateRequest,
+  preTechEditRequest,
+} from '../../redux/thunks';
+import {unwrapResult} from '@reduxjs/toolkit';
+import dayjs from 'dayjs';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'PreTech'>;
@@ -32,10 +40,75 @@ export default function PreTechScreen({navigation, route}: Props) {
   const employeeData: EmployeeData = useSelector<EmployeeData>(
     state => state.data.employeeData,
   );
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     console.log('ROUTE', JSON.stringify(route.params));
   }, []);
+
+  function sendRequest() {
+    if (!dist) {
+      Alert.alert('Ошибка', 'Заполните все поля');
+      return;
+    }
+
+    setLoading(true);
+    if (route.params.type === 'add') {
+      dispatch(
+        preTechCreateRequest({
+          token,
+          data: {
+            checkupData: {odometerData: dist, desinfected: passed},
+            type: 'PRE_TECH',
+            specialist: {id: employeeData.id},
+            waybill: {id: route.params.waybillId},
+          },
+        }),
+      )
+        .then(unwrapResult)
+        .then(_ => {
+          setLoading(false);
+          navigation.goBack();
+        })
+        .catch(er => {
+          setLoading(false);
+
+          Alert.alert('Ошибка', JSON.stringify(er));
+        });
+    } else {
+      dispatch(
+        preTechEditRequest({
+          token,
+          CheckupID: route.params.checkupId ? route.params.checkupId : 0,
+          data: {
+            checkupData: {odometerData: dist, desinfected: passed},
+            waybill: {id: route.params.waybillId},
+            type: 'PRE_TECH',
+            id: route.params.checkupId ? route.params.checkupId : 0,
+            dateTimePassed: dayjs(new Date()).format().toString(),
+            specialist: {
+              id: employeeData.id,
+              organization: {
+                id: employeeData.organization.id,
+                shortName: employeeData.organization.shortName,
+              },
+              abbreviatedName: employeeData.user.abbreviatedName,
+            },
+          },
+        }),
+      )
+        .then(unwrapResult)
+        .then(_ => {
+          setLoading(false);
+          navigation.goBack();
+        })
+        .catch(er => {
+          setLoading(false);
+
+          Alert.alert('Ошибка', JSON.stringify(er));
+        });
+    }
+  }
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar
@@ -74,7 +147,15 @@ export default function PreTechScreen({navigation, route}: Props) {
         />
         <Text>Дезинфекция проведена</Text>
       </Pressable>
-      <BaseButton loading={loading} text={'Сохранить'} onPress={() => {}} />
+      <BaseButton
+        loading={loading}
+        text={'Сохранить'}
+        onPress={() => {
+          if (!loading) {
+            sendRequest();
+          }
+        }}
+      />
     </View>
   );
   //endregion jsx
