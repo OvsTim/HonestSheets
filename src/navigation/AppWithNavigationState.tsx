@@ -10,7 +10,9 @@ import SplashScreen from 'react-native-splash-screen';
 export default function AppWithNavigationState() {
   useEffect(() => {
     console.log('useEffect splash');
-    SplashScreen.hide();
+    setTimeout(() => {
+      SplashScreen.hide();
+    }, 2000);
   }, []);
   const routeNameRef = React.useRef<string | undefined>('');
   const navigationRef = React.useRef<NavigationContainerRef>(null);

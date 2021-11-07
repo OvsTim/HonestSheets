@@ -19,12 +19,12 @@ export function handleBaseError(er: any): string {
   // } else {
   //   return er.message;
   // }
-  if (er.response.status) {
+  if (er.response && er.response.status) {
     switch (er.response.status) {
       case 500:
         return 'Произошла ошибка выполнения запроса. Проверьте правильность заполненных данных и повторите попытку';
       case 401:
-        return 'Требуется заново авторизрваться в приложении. ';
+        return 'Требуется заново авторизрваться в приложении.';
       case 429:
         return 'Превышено количество попыток входа. Повторите попытку позже';
       default:
