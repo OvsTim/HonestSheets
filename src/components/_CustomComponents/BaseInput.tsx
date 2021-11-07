@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {Ref, useState} from 'react';
 import {
   View,
   TextInput,
@@ -19,14 +19,13 @@ type Props = {
   label: string;
   inputProps: TextInputProps;
   labelStyle: TextProps;
+  showLabel: boolean;
+  inputRef?: Ref<TextInput>;
 };
 
 export default function BaseInput(props: Props) {
-  const [value, setValue] = useState<string>(props.value);
-
   function handleInput(input: string) {
     props.onTextChanges(input);
-    setValue(input);
   }
 
   function renderLabel() {
@@ -70,6 +69,7 @@ export default function BaseInput(props: Props) {
         props.styleContainer,
       ]}>
       <TextInput
+        ref={props.inputRef}
         style={[
           {
             width: '100%',
@@ -80,15 +80,15 @@ export default function BaseInput(props: Props) {
           },
           props.styleInput,
         ]}
-        onChangeText={(terms) => {
+        onChangeText={terms => {
           handleInput(terms);
         }}
         {...props.inputProps}
-        value={value}
+        value={props.value}
         placeholder={props.placeholder}
         underlineColorAndroid={'rgba(0,0,0,0)'}
       />
-      {renderLabel()}
+      {props.showLabel && renderLabel()}
     </View>
   );
 }
@@ -103,4 +103,5 @@ BaseInput.defaultProps = {
   label: 'Текст',
   inputProps: {},
   labelStyle: {},
+  showLabel: false,
 };

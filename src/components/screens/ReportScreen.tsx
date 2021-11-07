@@ -2,6 +2,8 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   FlatList,
+  Image,
+  Pressable,
   StatusBar,
   Text,
   useWindowDimensions,
@@ -14,7 +16,7 @@ import {RouteProp} from '@react-navigation/native';
 import {useAppDispatch, useSelector} from '../../redux';
 import {getReportRequest} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {Checkup, CheckupType, Report} from '../../API';
+import {Checkup, CheckupType, Employee, Report} from '../../API';
 import * as Progress from 'react-native-progress';
 import dayjs from 'dayjs';
 
@@ -28,6 +30,9 @@ const Button = withPressable(View);
 export default function ReportScreen({navigation, route}: Props) {
   const dispatch = useAppDispatch();
   const token = useSelector<string>(state => state.data.token);
+  const currentEmployee: Employee | undefined = useSelector<
+    Employee | undefined
+  >(state => state.data.currentEmployee);
   const {width} = useWindowDimensions();
   const [report, setReport] = useState<Report | null>(null);
   //region jsx
@@ -55,31 +60,109 @@ export default function ReportScreen({navigation, route}: Props) {
     }
   }
 
-  function renderCheckup(item: Checkup) {
-    return (
-      <View
-        style={{
-          borderBottomWidth: 1,
-          paddingVertical: 32,
-          width,
-          flexDirection: 'row',
-          borderBottomColor: 'gray',
-        }}>
-        <Text style={{width: 100}}>{getTypeName(item.type)}</Text>
-        <View>
-          <Text style={{width: width / 2}}>
-            {item.specialist.organization.shortName +
-              ' ' +
-              item.specialist.abbreviatedName}
-          </Text>
-          <Text style={{width: width / 2}}>
-            {item?.dateTimePassed
-              ? dayjs(item?.dateTimePassed).format('DD.MM.YYYY HH:mm')
-              : ''}
-          </Text>
-        </View>
-      </View>
-    );
+  console.log('РАБОТНИК', currentEmployee);
+  function renderCheckup(item: Checkup | undefined, type: CheckupType) {
+    if (item === undefined) {
+      return (
+        <Pressable
+          disabled={
+            (currentEmployee &&
+              currentEmployee.employeeType === 'MEDIC' &&
+              (type === 'PRE_MED' || type === 'POST_MED')) ||
+            (currentEmployee?.employeeType === 'TECHNICIAN' &&
+              (type === 'PRE_TECH' || type === 'POST_TECH'))
+              ? null
+              : true
+          }
+          onPress={() =>
+            navigation.navigate(
+              type === 'PRE_MED'
+                ? 'PreMed'
+                : type === 'POST_MED'
+                ? 'PostMed'
+                : type === 'PRE_TECH'
+                ? 'PreTech'
+                : 'PostTech',
+            )
+          }
+          android_ripple={{radius: 200, color: 'gray'}}
+          style={{
+            borderTopWidth: type === 'PRE_MED' || type === 'POST_MED' ? 1 : 0,
+            borderBottomWidth: 1,
+            paddingVertical: 32,
+            width,
+            flexDirection: 'row',
+            borderBottomColor: 'gray',
+          }}>
+          <Text style={{width: 100}}>{getTypeName(type)}</Text>
+          <View>
+            <Text style={{width: width / 2}}>{'Не пройдено'}</Text>
+          </View>
+          {(currentEmployee &&
+            currentEmployee.employeeType === 'MEDIC' &&
+            (type === 'PRE_MED' || type === 'POST_MED')) ||
+            (currentEmployee?.employeeType === 'TECHNICIAN' &&
+              (type === 'PRE_TECH' || type === 'POST_TECH') && (
+                <Image
+                  style={{height: 32, width: 32, tintColor: 'orange'}}
+                  source={require('../../assets/baseline_edit_black_24dp.png')}
+                />
+              ))}
+        </Pressable>
+      );
+    } else {
+      return (
+        <Pressable
+          disabled={
+            (currentEmployee &&
+              currentEmployee.employeeType === 'MEDIC' &&
+              (type === 'PRE_MED' || type === 'POST_MED')) ||
+            (currentEmployee?.employeeType === 'TECHNICIAN' &&
+              (type === 'PRE_TECH' || type === 'POST_TECH'))
+              ? null
+              : true
+          }
+          onPress={() =>
+            navigation.navigate(
+              type === 'PRE_MED'
+                ? 'PreMed'
+                : type === 'POST_MED'
+                ? 'PostMed'
+                : type === 'PRE_TECH'
+                ? 'PreTech'
+                : 'PostTech',
+            )
+          }
+          android_ripple={{radius: 200, color: 'gray'}}
+          style={{
+            borderTopWidth: type === 'PRE_MED' || type === 'POST_MED' ? 1 : 0,
+
+            borderBottomWidth: 1,
+            paddingVertical: 32,
+            width,
+            flexDirection: 'row',
+            borderBottomColor: 'gray',
+          }}>
+          <Text style={{width: 100}}>{getTypeName(item.type)}</Text>
+          <View>
+            <Text style={{width: width / 2}}>
+              {item.specialist.organization.shortName +
+                ' ' +
+                item.specialist.abbreviatedName}
+            </Text>
+            <Text style={{width: width / 2}}>
+              {item?.dateTimePassed
+                ? dayjs(item?.dateTimePassed).format('DD.MM.YYYY HH:mm')
+                : ''}
+            </Text>
+          </View>
+          <Image
+            style={{height: 32, width: 32, tintColor: 'orange'}}
+            source={require('../../assets/baseline_edit_black_24dp.png')}
+          />
+        </Pressable>
+      );
+    }
   }
 
   function renderReport() {
@@ -108,22 +191,35 @@ export default function ReportScreen({navigation, route}: Props) {
             : ''}
         </Text>
 
-        <FlatList
-          data={report?.checkups}
-          renderItem={({item}) => renderCheckup(item)}
-        />
+        {renderCheckup(
+          report?.checkups.filter(it => it.type === 'PRE_MED')[0],
+          'PRE_MED',
+        )}
+        {renderCheckup(
+          report?.checkups.filter(it => it.type === 'PRE_TECH')[0],
+          'PRE_TECH',
+        )}
+
         <Text>
           {report?.dateTimeShiftStart
             ? 'Начало смены: ' +
               dayjs(report?.dateTimeShiftStart).format('DD.MM.YYYY HH:mm')
-            : ''}
+            : 'Начало смены: смена не начата'}
         </Text>
         <Text>
           {report?.dateTimeShiftEnd
             ? 'Окончание смены: ' +
               dayjs(report?.dateTimeShiftEnd).format('DD.MM.YYYY HH:mm')
-            : ''}
+            : 'Окончание смены: смена не окончена'}
         </Text>
+        {renderCheckup(
+          report?.checkups.filter(it => it.type === 'POST_MED')[0],
+          'POST_MED',
+        )}
+        {renderCheckup(
+          report?.checkups.filter(it => it.type === 'POST_TECH')[0],
+          'PRE_TECH',
+        )}
       </View>
     );
   }
