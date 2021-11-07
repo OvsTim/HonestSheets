@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Alert,
   FlatList,
@@ -12,10 +12,11 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import ThrottledSearchInput from '../_CustomComponents/ThrottledSearchInput';
 import {useAppDispatch, useSelector} from '../../redux';
-import {searchRequest} from '../../redux/thunks';
+import {getEmployeeRequest, searchRequest} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {SearchReport} from '../../API';
+import {Employee, EmployeeData, SearchReport} from '../../API';
 import dayjs from 'dayjs';
+import {setEmpData} from '../../redux/UserDataSlice';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'Search'>;
@@ -24,9 +25,24 @@ type Props = {
 export default function SearchScreen({navigation}: Props) {
   //region jsx
   const token = useSelector<string>(state => state.data.token);
+  const currentEmployee = useSelector<Employee>(state =>
+    state.data.currentEmployee
+      ? state.data.currentEmployee
+      : {employeeId: 0, employeeType: 'MEDIC', orgName: ''},
+  );
   const [searchResult, setSearchResult] = useState<Array<SearchReport>>([]);
   const dispatch = useAppDispatch();
   const {width} = useWindowDimensions();
+
+  useEffect(() => {
+    dispatch(getEmployeeRequest({token, id: currentEmployee.employeeId}))
+      .then(unwrapResult)
+      .then(res => {
+        console.log('res', res);
+        dispatch(setEmpData(res));
+      })
+      .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
+  }, [currentEmployee.employeeId, token]);
 
   function renderSearchReport(item: SearchReport) {
     return (

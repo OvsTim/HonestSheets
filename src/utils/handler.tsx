@@ -16,9 +16,11 @@ export function handleBaseError(er: any): string {
 
   if (instanceOfSerializedError(er)) {
     return er.message;
+  } else {
+    return er;
   }
 
-  //todo: обработать серверную ошибку
-
-  return i18n.t('errors:400');
+  // //todo: обработать серверную ошибку
+  //
+  // return i18n.t('errors:400');
 }

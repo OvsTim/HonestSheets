@@ -1,10 +1,11 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {fetchImages} from './thunks';
-import {Employee, Image} from '../API';
+import {Employee, EmployeeData, Image} from '../API';
 
 interface User {
   token: string;
   currentEmployee?: Employee;
+  employeeData: EmployeeData;
 }
 
 interface dataState extends User {
@@ -15,6 +16,27 @@ const initialState = {
   token: '',
   images: [],
   currentEmployee: undefined,
+  employeeData: {
+    organization: {id: 0, type: 'MED_ORG', shortName: ''},
+    type: 'MEDIC',
+    user: {
+      id: 0,
+      abbreviatedName: '',
+      firstName: '',
+      fullName: '',
+      lastName: '',
+      created: '',
+      email: '',
+      msisdn: '',
+      status: 'NEW',
+      password: '',
+      patronymic: '',
+    },
+    status: 'NEW',
+    created: '',
+    id: 0,
+    roleSet: [],
+  },
 } as dataState;
 
 const dataSlice = createSlice({
@@ -24,6 +46,9 @@ const dataSlice = createSlice({
     setAuthData(state, action: PayloadAction<User>) {
       const {token = ''} = action.payload;
       state.token = token;
+    },
+    setEmpData(state, action: PayloadAction<EmployeeData>) {
+      state.employeeData = action.payload;
     },
     setTokenAndEmployee(
       state,
@@ -45,6 +70,7 @@ const dataSlice = createSlice({
 
 export const {
   setAuthData,
+  setEmpData,
   setTokenAndEmployee,
   resetAction,
 } = dataSlice.actions;

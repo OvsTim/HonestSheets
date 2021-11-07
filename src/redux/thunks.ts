@@ -68,3 +68,16 @@ export const getReportRequest = createAsyncThunk(
     }
   },
 );
+
+export const getEmployeeRequest = createAsyncThunk(
+  'users/getEmployee',
+  async (arg: {token: string; id: number}, {rejectWithValue}) => {
+    try {
+      const response = await API.getEmployee(arg.id, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);

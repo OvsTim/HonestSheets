@@ -60,7 +60,6 @@ export default function ReportScreen({navigation, route}: Props) {
     }
   }
 
-  console.log('РАБОТНИК', currentEmployee);
   function renderCheckup(item: Checkup | undefined, type: CheckupType) {
     if (item === undefined) {
       return (
@@ -93,6 +92,7 @@ export default function ReportScreen({navigation, route}: Props) {
             width,
             flexDirection: 'row',
             borderBottomColor: 'gray',
+            borderTopColor: 'gray',
           }}>
           <Text style={{width: 100}}>{getTypeName(type)}</Text>
           <View>
@@ -142,6 +142,7 @@ export default function ReportScreen({navigation, route}: Props) {
             width,
             flexDirection: 'row',
             borderBottomColor: 'gray',
+            borderTopColor: 'gray',
           }}>
           <Text style={{width: 100}}>{getTypeName(item.type)}</Text>
           <View>
@@ -156,10 +157,16 @@ export default function ReportScreen({navigation, route}: Props) {
                 : ''}
             </Text>
           </View>
-          <Image
-            style={{height: 32, width: 32, tintColor: 'orange'}}
-            source={require('../../assets/baseline_edit_black_24dp.png')}
-          />
+          {(currentEmployee &&
+            currentEmployee.employeeType === 'MEDIC' &&
+            (type === 'PRE_MED' || type === 'POST_MED')) ||
+            (currentEmployee?.employeeType === 'TECHNICIAN' &&
+              (type === 'PRE_TECH' || type === 'POST_TECH') && (
+                <Image
+                  style={{height: 32, width: 32, tintColor: 'orange'}}
+                  source={require('../../assets/baseline_edit_black_24dp.png')}
+                />
+              ))}
         </Pressable>
       );
     }
