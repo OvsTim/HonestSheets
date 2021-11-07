@@ -80,6 +80,11 @@ export default function ReportScreen({navigation, route}: Props) {
                 : type === 'PRE_TECH'
                 ? 'PreTech'
                 : 'PostTech',
+              {
+                waybillId: report?.id ? report?.id : 0,
+                type: 'add',
+                checkupId: undefined,
+              },
             )
           }
           android_ripple={{radius: 200, color: 'gray'}}
@@ -129,6 +134,11 @@ export default function ReportScreen({navigation, route}: Props) {
                 : type === 'PRE_TECH'
                 ? 'PreTech'
                 : 'PostTech',
+              {
+                waybillId: report?.id ? report?.id : 0,
+                type: 'edit',
+                checkupId: item?.id ? item.id : undefined,
+              },
             )
           }
           android_ripple={{radius: 200, color: 'gray'}}

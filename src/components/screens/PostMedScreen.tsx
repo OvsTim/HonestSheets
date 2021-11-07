@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Pressable,
   StatusBar,
@@ -8,22 +8,31 @@ import {
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
-import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import CheckBox from '@react-native-community/checkbox';
 import BaseButton from '../_CustomComponents/BaseButton';
+import {RouteProp} from '@react-navigation/native';
+import {useSelector} from '../../redux';
+import {EmployeeData} from '../../API';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'PostMed'>;
+  route: RouteProp<AuthStackParamList, 'PostMed'>;
 };
 
-const Button = withPressable(View);
-
-export default function PostMedScreen({navigation}: Props) {
+export default function PostMedScreen({navigation, route}: Props) {
   //region jsx
   const [passed, setPassed] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
+  const token: string = useSelector<string>(state => state.data.token);
+  const employeeData: EmployeeData = useSelector<EmployeeData>(
+    state => state.data.employeeData,
+  );
+
   const {width} = useWindowDimensions();
 
+  useEffect(() => {
+    console.log('ROUTE', JSON.stringify(route.params));
+  }, []);
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar

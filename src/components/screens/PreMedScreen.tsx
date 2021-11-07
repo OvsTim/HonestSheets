@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
   Animated,
   Pressable,
@@ -10,18 +10,19 @@ import {
 } from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
-import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import BaseInput from '../_CustomComponents/BaseInput';
 import CheckBox from '@react-native-community/checkbox';
 import BaseButton from '../_CustomComponents/BaseButton';
+import {RouteProp} from '@react-navigation/native';
+import {useSelector} from '../../redux';
+import {EmployeeData} from '../../API';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'PreMed'>;
+  route: RouteProp<AuthStackParamList, 'PreMed'>;
 };
 
-const Button = withPressable(View);
-
-export default function PreMedScreen({navigation}: Props) {
+export default function PreMedScreen({navigation, route}: Props) {
   //region jsx
   const [temperature, setTemperature] = useState<string>('');
   const [bloodPressureSys, setBloodPressureSys] = useState<string>('');
@@ -32,6 +33,15 @@ export default function PreMedScreen({navigation}: Props) {
   const bloodPressureSysRef = useRef<TextInput>(null);
   const bloodPressureDiaRef = useRef<TextInput>(null);
   const {width} = useWindowDimensions();
+  const token: string = useSelector<string>(state => state.data.token);
+  const employeeData: EmployeeData = useSelector<EmployeeData>(
+    state => state.data.employeeData,
+  );
+
+  useEffect(() => {
+    console.log('ROUTE', JSON.stringify(route.params));
+  }, []);
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar

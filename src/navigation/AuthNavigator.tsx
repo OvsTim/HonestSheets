@@ -13,10 +13,10 @@ export type AuthStackParamList = {
   One: undefined;
   Three: {paramString: string} | undefined;
   Auth: undefined;
-  PostMed: undefined;
-  PreMed: undefined;
-  PreTech: undefined;
-  PostTech: undefined;
+  PostMed: {waybillId: number; checkupId?: number; type: 'add' | 'edit'};
+  PreMed: {waybillId: number; checkupId?: number; type: 'add' | 'edit'};
+  PreTech: {waybillId: number; checkupId?: number; type: 'add' | 'edit'};
+  PostTech: {waybillId: number; checkupId?: number; type: 'add' | 'edit'};
   Report: {id: number};
   Search: undefined;
 };
