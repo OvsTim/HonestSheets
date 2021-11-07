@@ -78,6 +78,71 @@ export interface Report {
   checkups: Array<Checkup>;
 }
 
+export interface EmployeeData {
+  id: number;
+  status: 'NEW' | 'ACTIVE' | 'INACTIVE';
+  organization: {
+    id: number;
+    shortName: string;
+    type:
+      | 'CONTROL_ORG'
+      | 'TAXI_PARK'
+      | 'TAXI_PARK_SP'
+      | 'TECH_ORG'
+      | 'MED_ORG'
+      | 'AGGREGATOR_ORG';
+  };
+  user: {
+    id: number;
+    email: string;
+    password: string;
+    msisdn: string;
+    firstName: string;
+    patronymic: string;
+    lastName: string;
+    status: 'NEW' | 'ACTIVE' | 'INACTIVE';
+
+    created: string;
+    abbreviatedName: string;
+    fullName: string;
+  };
+  roleSet: Array<{id: string; permissions: Array<string>}>;
+  type: EmployeeType;
+  created: string;
+}
+
+export interface PreMedCreateCheckup {
+  checkupData: {
+    bloodPressureDia: string;
+    bloodPressureSys: string;
+    bodyTemperature: string;
+    alcoholTestPassed: boolean;
+  };
+  type: CheckupType;
+  specialist: {id: number};
+  waybill: {id: number};
+}
+export interface PostMedCreateCheckup {
+  checkupData: {
+    alcoholTestPassed: boolean;
+  };
+  type: CheckupType;
+  specialist: {id: number};
+  waybill: {id: number};
+}
+export interface PreTechCreateCheckup {
+  checkupData: {desinfected: boolean; odometerData: string};
+  type: CheckupType;
+  specialist: {id: number};
+  waybill: {id: number};
+}
+export interface PostTechCreateCheckup {
+  checkupData: {washed: boolean; odometerData: string};
+  type: CheckupType;
+  specialist: {id: number};
+  waybill: {id: number};
+}
+
 export const base_url = 'https://art.taxi.mos.ru/api';
 export function getImages(url: string) {
   return axios.get<Image[]>(url, {
@@ -110,6 +175,12 @@ export function search(term: string, token: string) {
 
 export function getReport(id: number, token: string) {
   return axios.get<Report>(base_url + '/waybills/' + id, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function getEmployee(id: number, token: string) {
+  return axios.get<EmployeeData>(base_url + '/employees/' + id, {
     headers: {Authorization: token, 'Content-Type': 'application/json'},
   });
 }
