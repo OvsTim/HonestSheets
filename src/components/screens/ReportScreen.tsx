@@ -41,7 +41,7 @@ export default function ReportScreen({navigation, route}: Props) {
           // console.log('res', res);
           setReport(res);
         })
-        .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
+        .catch(er => Alert.alert('Ошибка', er));
     }, []),
   );
 

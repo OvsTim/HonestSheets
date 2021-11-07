@@ -79,7 +79,7 @@ export default function PreMedScreen({navigation, route}: Props) {
         .catch(er => {
           setLoading(false);
 
-          Alert.alert('Ошибка', JSON.stringify(er));
+          Alert.alert('Ошибка', er);
         });
     } else {
       dispatch(
@@ -116,7 +116,7 @@ export default function PreMedScreen({navigation, route}: Props) {
         .catch(er => {
           setLoading(false);
 
-          Alert.alert('Ошибка', JSON.stringify(er));
+          Alert.alert('Ошибка', er);
         });
     }
   }

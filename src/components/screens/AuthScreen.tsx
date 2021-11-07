@@ -49,7 +49,7 @@ export default function AuthScreen({navigation}: Props) {
                 navigation.navigate('Search');
               }, 500);
             })
-            .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
+            .catch(er => Alert.alert('Ошибка', er));
         }}>
         <Text style={{fontSize: 17}}>{item.orgName}</Text>
         <Text>
@@ -95,7 +95,7 @@ export default function AuthScreen({navigation}: Props) {
             .catch(er => {
               setLoading(false);
 
-              Alert.alert('Ошибка', JSON.stringify(er));
+              Alert.alert('Ошибка', er);
             });
         }}
       />

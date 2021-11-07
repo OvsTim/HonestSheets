@@ -41,7 +41,7 @@ export default function SearchScreen({navigation}: Props) {
         console.log('res', res);
         dispatch(setEmpData(res));
       })
-      .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
+      .catch(er => Alert.alert('Ошибка', er));
   }, [currentEmployee.employeeId, token]);
 
   function renderSearchReport(item: SearchReport) {
@@ -89,7 +89,7 @@ export default function SearchScreen({navigation}: Props) {
                 console.log('res', res);
                 setSearchResult(res);
               })
-              .catch(er => Alert.alert('Ошибка', JSON.stringify(er)));
+              .catch(er => Alert.alert('Ошибка', er));
           } else {
             setSearchResult([]);
           }

@@ -12,12 +12,26 @@ function instanceOfSerializedError(er: any): er is SerializedError {
 }
 
 export function handleBaseError(er: any): string {
-  console.log('er', er);
+  // console.log('er', JSON.stringify(er.response));
 
-  if (instanceOfSerializedError(er)) {
-    return er.message;
+  // if (instanceOfSerializedError(er)) {
+  //   return er.message;
+  // } else {
+  //   return er.message;
+  // }
+  if (er.response.status) {
+    switch (er.response.status) {
+      case 500:
+        return 'Произошла ошибка выполнения запроса. Проверьте правильность заполненных данных и повторите попытку';
+      case 401:
+        return 'Требуется заново авторизрваться в приложении. ';
+      case 429:
+        return 'Превышено количество попыток входа. Повторите попытку позже';
+      default:
+        return 'Неизвестная ошибка';
+    }
   } else {
-    return er.message;
+    return 'Неизвестная ошибка';
   }
 
   // //todo: обработать серверную ошибку
