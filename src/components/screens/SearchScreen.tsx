@@ -2,6 +2,7 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   FlatList,
+  Image,
   Pressable,
   StatusBar,
   Text,
@@ -17,6 +18,7 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {Employee, EmployeeData, SearchReport} from '../../API';
 import dayjs from 'dayjs';
 import {setEmpData} from '../../redux/UserDataSlice';
+import {withPressable} from '../_CustomComponents/HOC/withPressable';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'Search'>;
@@ -33,6 +35,22 @@ export default function SearchScreen({navigation}: Props) {
   const [searchResult, setSearchResult] = useState<Array<SearchReport>>([]);
   const dispatch = useAppDispatch();
   const {width} = useWindowDimensions();
+  const Button = withPressable(View);
+
+  React.useLayoutEffect(() => {
+    navigation.setOptions({
+      headerRight: () => (
+        <View style={{marginRight: 8}}>
+          <Button onPress={() => {}} containerStyle={{}}>
+            <Image
+              style={{width: 32, height: 32}}
+              source={require('../../assets/outline_account_circle_black_24.png')}
+            />
+          </Button>
+        </View>
+      ),
+    });
+  }, [navigation]);
 
   useEffect(() => {
     dispatch(getEmployeeRequest({token, id: currentEmployee.employeeId}))
@@ -78,6 +96,21 @@ export default function SearchScreen({navigation}: Props) {
         backgroundColor={'rgba(0,0,0,0.1)'}
         barStyle="dark-content"
       />
+
+      <Text style={{width: width - 32}}>
+        {'Организация :' + currentEmployee.orgName}
+      </Text>
+      <Text style={{width: width - 32}}>
+        {currentEmployee.employeeType === 'MEDIC'
+          ? 'Должность: Медик'
+          : currentEmployee.employeeId === 148530
+          ? 'Должность: Техник'
+          : currentEmployee.employeeType === 'TECHNICIAN'
+          ? 'Должность: Техник 1'
+          : currentEmployee.employeeType === 'OPERATOR'
+          ? 'Должность: Таксопарк'
+          : 'Должность: ' + currentEmployee.employeeType}
+      </Text>
       <ThrottledSearchInput
         value={''}
         onThrottledChange={term => {

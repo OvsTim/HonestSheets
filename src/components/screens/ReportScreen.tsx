@@ -108,7 +108,7 @@ export default function ReportScreen({navigation, route}: Props) {
             (type === 'PRE_TECH' || type === 'POST_TECH')) ? (
             <Image
               style={{height: 32, width: 32, tintColor: 'orange'}}
-              source={require('../../assets/baseline_edit_black_24dp.png')}
+              source={require('../../assets/outline_edit_black_36.png')}
             />
           ) : (
             <View />
@@ -175,7 +175,7 @@ export default function ReportScreen({navigation, route}: Props) {
             (type === 'PRE_TECH' || type === 'POST_TECH')) ? (
             <Image
               style={{height: 32, width: 32, tintColor: 'orange'}}
-              source={require('../../assets/baseline_edit_black_24dp.png')}
+              source={require('../../assets/outline_edit_black_36.png')}
             />
           ) : (
             <View />

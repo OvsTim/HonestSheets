@@ -51,21 +51,25 @@ export default function AuthScreen({navigation}: Props) {
             })
             .catch(er => Alert.alert('Ошибка', er));
         }}>
-        <Text style={{fontSize: 17}}>{item.orgName}</Text>
-        <Text>
-          {item.orgType === 'TECH_ORG'
-            ? 'Техцентр'
-            : item.orgType === 'MED_ORG'
-            ? 'Мед организация'
-            : item.orgType === 'TAXI_PARK'
-            ? 'Таксопарк'
-            : item.orgType}
-        </Text>
+        {/*<Text style={{fontSize: 17}}>{item.orgName}</Text>*/}
+        {/*<Text>*/}
+        {/*  {item.orgType === 'TECH_ORG'*/}
+        {/*    ? 'Техцентр'*/}
+        {/*    : item.orgType === 'MED_ORG'*/}
+        {/*    ? 'Мед организация'*/}
+        {/*    : item.orgType === 'TAXI_PARK'*/}
+        {/*    ? 'Таксопарк'*/}
+        {/*    : item.orgType}*/}
+        {/*</Text>*/}
         <Text>
           {item.employeeType === 'MEDIC'
             ? 'Медик'
-            : item.employeeType === 'TECHNICIAN'
+            : item.employeeId === 148530
             ? 'Техник'
+            : item.employeeType === 'TECHNICIAN'
+            ? 'Техник 1'
+            : item.employeeType === 'OPERATOR'
+            ? 'Таксопарк'
             : item.employeeType}
         </Text>
       </Pressable>
@@ -113,7 +117,8 @@ export default function AuthScreen({navigation}: Props) {
         }}>
         <FlatList
           contentContainerStyle={{
-            width,
+            width: width - 50,
+            alignSelf: 'center',
             backgroundColor: 'white',
             borderRadius: 15,
           }}
