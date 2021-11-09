@@ -13,7 +13,7 @@ import {StackNavigationProp} from '@react-navigation/stack';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import BaseButton from '../_CustomComponents/BaseButton';
-import {useAppDispatch} from '../../redux';
+import {useAppDispatch, useSelector} from '../../redux';
 import {auth, Employee} from '../../API';
 import {authEmployeeRequest, authRequest} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
@@ -29,9 +29,10 @@ const Button = withPressable(View);
 export default function AuthScreen({navigation}: Props) {
   const dispatch = useAppDispatch();
   const {width} = useWindowDimensions();
-  const [empList, setEmpList] = useState<Array<Employee>>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [visible, setVisible] = useState<boolean>(false);
+  const empList = useSelector<Array<Employee>>(state => state.data.empList);
+
   //region jsx
 
   function renderEmployee(item: Employee) {
@@ -92,7 +93,6 @@ export default function AuthScreen({navigation}: Props) {
             .then(unwrapResult)
             .then(res => {
               setLoading(false);
-              setEmpList(res);
               setVisible(true);
               console.log('res', res);
             })

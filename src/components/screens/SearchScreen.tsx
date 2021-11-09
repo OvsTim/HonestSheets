@@ -15,9 +15,8 @@ import ThrottledSearchInput from '../_CustomComponents/ThrottledSearchInput';
 import {useAppDispatch, useSelector} from '../../redux';
 import {getEmployeeRequest, searchRequest} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {Employee, EmployeeData, SearchReport} from '../../API';
+import {Employee, SearchReport} from '../../API';
 import dayjs from 'dayjs';
-import {setEmpData} from '../../redux/UserDataSlice';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
 
 type Props = {
@@ -57,7 +56,6 @@ export default function SearchScreen({navigation}: Props) {
       .then(unwrapResult)
       .then(res => {
         console.log('res', res);
-        dispatch(setEmpData(res));
       })
       .catch(er => Alert.alert('Ошибка', er));
   }, [currentEmployee.employeeId, token]);
@@ -96,11 +94,7 @@ export default function SearchScreen({navigation}: Props) {
         backgroundColor={'rgba(0,0,0,0.1)'}
         barStyle="dark-content"
       />
-
-      <Text style={{width: width - 32}}>
-        {'Организация :' + currentEmployee.orgName}
-      </Text>
-      <Text style={{width: width - 32}}>
+      <Text style={{width: width - 32, marginVertical: 12}}>
         {currentEmployee.employeeType === 'MEDIC'
           ? 'Должность: Медик'
           : currentEmployee.employeeId === 148530
@@ -129,7 +123,7 @@ export default function SearchScreen({navigation}: Props) {
         }}
         onTextChanges={term => {}}
         styleInput={{}}
-        styleContainer={{marginTop: 24}}
+        styleContainer={{}}
         editable={true}
         placeholder={'Поиск'}
         inputProps={{}}
