@@ -203,6 +203,17 @@ export interface PostTechEditCheckup {
   dateTimePassed: string;
 }
 
+export interface DriverFromSearch {
+  id: number;
+  fullName: string;
+}
+
+export interface DriverSearchResponse {
+  entries: Array<DriverFromSearch>;
+  pageNum: number;
+  total: number;
+}
+
 export const base_url = 'https://art.taxi.mos.ru/api';
 export function getImages(url: string) {
   return axios.get<Image[]>(url, {
@@ -305,6 +316,43 @@ export function postTechEdit(
   checkupID: number,
 ) {
   return axios.post(base_url + '/checkups/POST_TECH/' + checkupID, data, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function getDrivers(token: string, page: number, searchTerm: string) {
+  return axios.get<DriverSearchResponse>(
+    base_url + '/employees/drivers/brief',
+    {
+      headers: {Authorization: token, 'Content-Type': 'application/json'},
+      params:
+        searchTerm === ''
+          ? {
+              pageNum: page,
+              pageSize: 10,
+              filters: 'status|ACTIVE',
+            }
+          : {
+              pageNum: page,
+              pageSize: 10,
+              search: searchTerm,
+              filters: 'status|ACTIVE',
+            },
+    },
+  );
+}
+
+export function getLastVehicleId(driver_id: number, token: string) {
+  return axios.get<number>(
+    base_url + '/waybills/last_vehicle/driver/' + driver_id,
+    {
+      headers: {Authorization: token, 'Content-Type': 'application/json'},
+    },
+  );
+}
+
+export function getVehicle(id: number, token: string) {
+  return axios.get(base_url + '/vehicles/' + id, {
     headers: {Authorization: token, 'Content-Type': 'application/json'},
   });
 }

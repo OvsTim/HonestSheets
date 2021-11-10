@@ -23,6 +23,8 @@ export function handleBaseError(er: any): string {
     switch (er.response.status) {
       case 500:
         return 'Произошла ошибка выполнения запроса. Проверьте правильность заполненных данных и повторите попытку';
+      case 404:
+        return 'Запрашиваемый ресурс не найден';
       case 401:
         return 'Требуется заново авторизрваться в приложении.';
       case 429:

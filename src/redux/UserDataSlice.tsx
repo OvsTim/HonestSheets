@@ -1,12 +1,13 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 import {authRequest, fetchImages, getEmployeeRequest} from './thunks';
-import {Employee, EmployeeData, Image} from '../API';
+import {DriverFromSearch, Employee, EmployeeData, Image} from '../API';
 
 interface User {
   token: string;
   currentEmployee?: Employee;
   employeeData: EmployeeData;
   empList: Array<Employee>;
+  tempDriver: DriverFromSearch;
 }
 
 interface dataState extends User {
@@ -15,6 +16,7 @@ interface dataState extends User {
 
 const initialState = {
   token: '',
+  tempDriver: {id: 0, fullName: ''},
   images: [],
   currentEmployee: undefined,
   empList: [],
@@ -56,6 +58,9 @@ const dataSlice = createSlice({
       state.token = action.payload.token || '';
       state.currentEmployee = action.payload.employee;
     },
+    setTempDriver(state, action: PayloadAction<DriverFromSearch>) {
+      state.tempDriver = action.payload;
+    },
     resetAction() {
       return initialState;
     },
@@ -75,6 +80,7 @@ const dataSlice = createSlice({
 
 export const {
   setAuthData,
+  setTempDriver,
   setTokenAndEmployee,
   resetAction,
 } = dataSlice.actions;

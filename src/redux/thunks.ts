@@ -2,6 +2,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import * as API from '../API';
 import {handleBaseError} from '../utils/handler';
 import {
+  getLastVehicleId,
   PostMedCreateCheckup,
   PostMedEditCheckup,
   PostTechCreateCheckup,
@@ -221,6 +222,52 @@ export const preTechEditRequest = createAsyncThunk(
         arg.token,
         arg.CheckupID,
       );
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const getDriversRequest = createAsyncThunk(
+  'users/getDriversRequest',
+  async (
+    arg: {token: string; page: number; searchTern: string},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.getDrivers(
+        arg.token,
+        arg.page,
+        arg.searchTern,
+      );
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const getLastVehicleIdRequest = createAsyncThunk(
+  'users/getLastVehicleIdRequest',
+  async (arg: {token: string; driver_id: number}, {rejectWithValue}) => {
+    try {
+      const response = await API.getLastVehicleId(arg.driver_id, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const getVehicleRequest = createAsyncThunk(
+  'users/getVehicleRequest',
+  async (arg: {token: string; id: number}, {rejectWithValue}) => {
+    try {
+      const response = await API.getVehicle(arg.id, arg.token);
       return response.data;
     } catch (er) {
       let errorMessage: string = handleBaseError(er);

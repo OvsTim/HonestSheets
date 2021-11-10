@@ -127,6 +127,7 @@ export default function ThrottledSearchInput(props: Props) {
           handleInput(terms);
         }}
         {...props.inputProps}
+        placeholder={props.placeholder}
         value={value}
         underlineColorAndroid={'rgba(0,0,0,0)'}
       />

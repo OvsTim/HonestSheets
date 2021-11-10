@@ -1,5 +1,6 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
+  Alert,
   Image,
   Pressable,
   StatusBar,
@@ -15,6 +16,11 @@ import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {AuthModal} from './AuthModal';
 import BaseInput from '../_CustomComponents/BaseInput';
 import BaseButton from '../_CustomComponents/BaseButton';
+import {DriverFromSearch, getVehicle} from '../../API';
+import {setTempDriver} from '../../redux/UserDataSlice';
+import {getLastVehicleIdRequest, getVehicleRequest} from '../../redux/thunks';
+import {unwrapResult} from '@reduxjs/toolkit';
+import * as Progress from 'react-native-progress';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'CreateReport'>;
@@ -23,11 +29,24 @@ type Props = {
 export default function CreateReportScreen({navigation}: Props) {
   const dispatch = useAppDispatch();
   const token = useSelector(state => state.data.token);
+  const tempDriver: DriverFromSearch = useSelector(
+    state => state.data.tempDriver,
+  );
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
-  const [driver, setDriver] = useState<string>('');
+  const [loadingVehicle, setLoadingVehicle] = useState<boolean>(false);
   const {width} = useWindowDimensions();
   const Button = withPressable(View);
+
+  React.useEffect(
+    () =>
+      navigation.addListener('beforeRemove', e => {
+        {
+          dispatch(setTempDriver({id: 0, fullName: ''}));
+        }
+      }),
+    [navigation],
+  );
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -48,6 +67,39 @@ export default function CreateReportScreen({navigation}: Props) {
     });
   }, [navigation]);
 
+  useEffect(() => {
+    // console.log('tempDriver', tempDriver);
+    if (tempDriver.id !== 0) {
+      setLoadingVehicle(true);
+      dispatch(getLastVehicleIdRequest({token, driver_id: tempDriver.id}))
+        .then(unwrapResult)
+        .then(res => {
+          setLoadingVehicle(false);
+          if (res) {
+            dispatch(getVehicleRequest({token, id: res}))
+              .then(unwrapResult)
+              .then(res => {
+                console.log('Vehicle', res);
+              })
+              .catch(er => {
+                setLoadingVehicle(false);
+                Alert.alert('Ошибка', er);
+              });
+          } else {
+            setLoadingVehicle(false);
+            Alert.alert(
+              'Ошибка',
+              'Не найдена последнее транспортное средство для этого водителя',
+            );
+          }
+        })
+        .catch(er => {
+          setLoadingVehicle(false);
+          Alert.alert('Ошибка', er);
+        });
+    }
+  }, [tempDriver, token]);
+
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
       <StatusBar
@@ -55,11 +107,14 @@ export default function CreateReportScreen({navigation}: Props) {
         backgroundColor={'rgba(0,0,0,0.1)'}
         barStyle="dark-content"
       />
-      <Pressable onPress={() => navigation.navigate('SearchDriver')}>
+      <Pressable
+        onPress={() => {
+          dispatch(setTempDriver({id: 0, fullName: ''}));
+          navigation.navigate('SearchDriver');
+        }}>
         <BaseInput
-          value={driver}
-          onTextChanges={term => setDriver(term.replace(/[^0-9.]/g, ''))}
-          styleInput={{}}
+          value={tempDriver.fullName}
+          styleInput={{color: 'black'}}
           styleContainer={{marginTop: 16}}
           editable={false}
           placeholder={'Водитель'}
@@ -68,6 +123,18 @@ export default function CreateReportScreen({navigation}: Props) {
           labelStyle={{}}
           showLabel={true}
         />
+        {loadingVehicle && (
+          <Progress.CircleSnail
+            size={32}
+            style={{
+              position: 'absolute',
+              right: 0,
+              alignSelf: 'center',
+              top: 16,
+            }}
+            color={['#DEDEDE', 'gray']}
+          />
+        )}
       </Pressable>
 
       <Text style={{width: width - 32, marginVertical: 16}}>

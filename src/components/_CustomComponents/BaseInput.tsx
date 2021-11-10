@@ -6,13 +6,14 @@ import {
   TextInputProps,
   TextProps,
   Text,
+  TextStyle,
 } from 'react-native';
 import {vScale, hScale, window} from '../../utils/scaling';
 
 type Props = {
   value: string;
   onTextChanges: (term: string) => void;
-  styleInput: ViewStyle;
+  styleInput: TextStyle;
   styleContainer: ViewStyle;
   editable: boolean;
   placeholder: string;
