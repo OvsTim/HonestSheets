@@ -12,7 +12,7 @@ function instanceOfSerializedError(er: any): er is SerializedError {
 }
 
 export function handleBaseError(er: any): string {
-  // console.log('er', JSON.stringify(er.response));
+  console.log('er', JSON.stringify(er.response));
 
   // if (instanceOfSerializedError(er)) {
   //   return er.message;
@@ -26,9 +26,16 @@ export function handleBaseError(er: any): string {
       case 404:
         return 'Запрашиваемый ресурс не найден';
       case 401:
-        return 'Требуется заново авторизрваться в приложении.';
+        return 'Требуется заново авторизоваться в приложении.';
       case 429:
         return 'Превышено количество попыток входа. Повторите попытку позже';
+      case 422:
+        if (er.response.data.message) {
+          return er.response.data.message;
+        } else {
+          return 'Неизвестная ошибка';
+        }
+
       default:
         return 'Неизвестная ошибка';
     }

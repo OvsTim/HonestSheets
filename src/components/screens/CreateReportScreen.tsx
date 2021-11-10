@@ -18,7 +18,11 @@ import BaseInput from '../_CustomComponents/BaseInput';
 import BaseButton from '../_CustomComponents/BaseButton';
 import {DriverFromSearch, getVehicle} from '../../API';
 import {setTempDriver} from '../../redux/UserDataSlice';
-import {getLastVehicleIdRequest, getVehicleRequest} from '../../redux/thunks';
+import {
+  createReportRequest,
+  getLastVehicleIdRequest,
+  getVehicleRequest,
+} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
 import * as Progress from 'react-native-progress';
 
@@ -35,6 +39,10 @@ export default function CreateReportScreen({navigation}: Props) {
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingVehicle, setLoadingVehicle] = useState<boolean>(false);
+  const [vehicle, setVehicle] = useState<{id: number; shortName: string}>({
+    id: 0,
+    shortName: '',
+  });
   const {width} = useWindowDimensions();
   const Button = withPressable(View);
 
@@ -80,6 +88,7 @@ export default function CreateReportScreen({navigation}: Props) {
               .then(unwrapResult)
               .then(res => {
                 console.log('Vehicle', res);
+                setVehicle({id: res.id, shortName: res.shortName});
               })
               .catch(er => {
                 setLoadingVehicle(false);
@@ -99,6 +108,41 @@ export default function CreateReportScreen({navigation}: Props) {
         });
     }
   }, [tempDriver, token]);
+
+  function createOrder() {
+    if (tempDriver.id === 0) {
+      Alert.alert('Ошибка', 'Выберите водителя');
+      return;
+    }
+
+    if (vehicle.id === 0) {
+      Alert.alert('Ошибка', 'Не выбрано транспортное средство');
+      return;
+    }
+
+    setLoading(true);
+    dispatch(
+      createReportRequest({
+        token,
+        data: {
+          status: 'ISSUED',
+          vehicle: {id: vehicle.id},
+          driver: {id: tempDriver.id},
+        },
+      }),
+    )
+      .then(unwrapResult)
+      .then(_ => {
+        setVehicle({id: 0, shortName: ''});
+        dispatch(setTempDriver({id: 0, fullName: ''}));
+        Alert.alert('Сообщение', 'Путевой лист успешно создан');
+        setLoading(false);
+      })
+      .catch(er => {
+        setLoading(false);
+        Alert.alert('Ошибка', er);
+      });
+  }
 
   return (
     <View style={{flex: 1, alignItems: 'center', justifyContent: 'flex-start'}}>
@@ -138,9 +182,15 @@ export default function CreateReportScreen({navigation}: Props) {
       </Pressable>
 
       <Text style={{width: width - 32, marginVertical: 16}}>
-        Транспортное средство: не выбрано
+        {vehicle.shortName
+          ? 'Транспортное средство: ' + vehicle.shortName
+          : 'Транспортное средство: не выбрано'}
       </Text>
-      <BaseButton loading={loading} text={'Создать'} onPress={() => {}} />
+      <BaseButton
+        loading={loading}
+        text={'Создать'}
+        onPress={() => createOrder()}
+      />
       <AuthModal
         isVisible={visible}
         onClose={() => setVisible(false)}

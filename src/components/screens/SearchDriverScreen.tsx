@@ -84,7 +84,7 @@ export default function SearchDriverScreen({navigation}: Props) {
           if (term.trim() !== '') {
             requestDrivers(token, 1, term);
           } else {
-            requestDrivers(token, 1, '');
+            setDrivers([]);
           }
         }}
       />

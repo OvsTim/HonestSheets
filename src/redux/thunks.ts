@@ -2,6 +2,7 @@ import {createAsyncThunk} from '@reduxjs/toolkit';
 import * as API from '../API';
 import {handleBaseError} from '../utils/handler';
 import {
+  CreateReportBody,
   getLastVehicleId,
   PostMedCreateCheckup,
   PostMedEditCheckup,
@@ -268,6 +269,19 @@ export const getVehicleRequest = createAsyncThunk(
   async (arg: {token: string; id: number}, {rejectWithValue}) => {
     try {
       const response = await API.getVehicle(arg.id, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const createReportRequest = createAsyncThunk(
+  'users/createReportRequest',
+  async (arg: {token: string; data: CreateReportBody}, {rejectWithValue}) => {
+    try {
+      const response = await API.createReport(arg.data, arg.token);
       return response.data;
     } catch (er) {
       let errorMessage: string = handleBaseError(er);

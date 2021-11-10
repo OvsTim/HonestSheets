@@ -84,13 +84,7 @@ export interface EmployeeData {
   organization: {
     id: number;
     shortName: string;
-    type:
-      | 'CONTROL_ORG'
-      | 'TAXI_PARK'
-      | 'TAXI_PARK_SP'
-      | 'TECH_ORG'
-      | 'MED_ORG'
-      | 'AGGREGATOR_ORG';
+    type: OrganizationType;
   };
   user: {
     id: number;
@@ -212,6 +206,50 @@ export interface DriverSearchResponse {
   entries: Array<DriverFromSearch>;
   pageNum: number;
   total: number;
+}
+
+export interface Vehicle {
+  id: number;
+  organization: {
+    id: number;
+    shortName: string;
+    type: OrganizationType;
+  };
+  licensePlateNumber: string;
+  payload: {
+    licenseNumber: string;
+    region: string;
+    manufacturer: string;
+    model: string;
+    diagnosticCardNumber: string;
+    diagnosticCardValidThru: string;
+    insuranceSeries: string;
+    insuranceNumber: string;
+    insuranceIssueDate: string;
+    insuranceValidThru: string;
+    insuranceVehicleOwner: string;
+    insuranceVehiclePurpose: string;
+  };
+  licenseStatus:
+    | 'Unknown'
+    | 'NotFound'
+    | 'Initial'
+    | 'Duplicate'
+    | 'Suspended'
+    | 'Canceled'
+    | 'Resumed'
+    | 'Expired'
+    | 'Expired2'
+    | 'Reissued'
+    | 'Terminated';
+  created: string;
+  shortName: string;
+}
+
+export interface CreateReportBody {
+  status: 'ISSUED';
+  vehicle: {id: number};
+  driver: {id: number};
 }
 
 export const base_url = 'https://art.taxi.mos.ru/api';
@@ -352,7 +390,13 @@ export function getLastVehicleId(driver_id: number, token: string) {
 }
 
 export function getVehicle(id: number, token: string) {
-  return axios.get(base_url + '/vehicles/' + id, {
+  return axios.get<Vehicle>(base_url + '/vehicles/' + id, {
+    headers: {Authorization: token, 'Content-Type': 'application/json'},
+  });
+}
+
+export function createReport(data: CreateReportBody, token: string) {
+  return axios.post(base_url + '/waybills', data, {
     headers: {Authorization: token, 'Content-Type': 'application/json'},
   });
 }
