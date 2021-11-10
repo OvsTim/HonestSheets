@@ -83,6 +83,7 @@ export default function BaseInput(props: Props) {
         onChangeText={terms => {
           handleInput(terms);
         }}
+        editable={props.editable}
         {...props.inputProps}
         value={props.value}
         placeholder={props.placeholder}

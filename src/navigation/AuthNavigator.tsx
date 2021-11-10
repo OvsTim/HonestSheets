@@ -8,6 +8,8 @@ import PreTechScreen from '../components/screens/PreTechScreen';
 import PostTechScreen from '../components/screens/PostTechScreen';
 import ReportScreen from '../components/screens/ReportScreen';
 import SearchScreen from '../components/screens/SearchScreen';
+import CreateReportScreen from '../components/screens/CreateReportScreen';
+import SearchDriverScreen from '../components/screens/SearchDriverScreen';
 
 export type AuthStackParamList = {
   One: undefined;
@@ -19,6 +21,8 @@ export type AuthStackParamList = {
   PostTech: {waybillId: number; checkupId?: number; type: 'add' | 'edit'};
   Report: {id: number};
   Search: undefined;
+  CreateReport: undefined;
+  SearchDriver: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -60,6 +64,16 @@ export default function AuthNavigator() {
         name="Search"
         component={SearchScreen}
         options={{title: 'Поиск'}}
+      />
+      <Stack.Screen
+        name="CreateReport"
+        component={CreateReportScreen}
+        options={{title: 'Создать путевой лист'}}
+      />
+      <Stack.Screen
+        name="SearchDriver"
+        component={SearchDriverScreen}
+        options={{title: 'Водители'}}
       />
     </>
   );

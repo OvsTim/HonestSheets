@@ -18,6 +18,7 @@ import {unwrapResult} from '@reduxjs/toolkit';
 import {Employee, SearchReport} from '../../API';
 import dayjs from 'dayjs';
 import {withPressable} from '../_CustomComponents/HOC/withPressable';
+import {AuthModal} from './AuthModal';
 
 type Props = {
   navigation: StackNavigationProp<AuthStackParamList, 'Search'>;
@@ -35,12 +36,13 @@ export default function SearchScreen({navigation}: Props) {
   const dispatch = useAppDispatch();
   const {width} = useWindowDimensions();
   const Button = withPressable(View);
+  const [visible, setVisible] = useState<boolean>(false);
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerRight: () => (
         <View style={{marginRight: 8}}>
-          <Button onPress={() => {}} containerStyle={{}}>
+          <Button onPress={() => setVisible(true)} containerStyle={{}}>
             <Image
               style={{width: 32, height: 32}}
               source={require('../../assets/outline_account_circle_black_24.png')}
@@ -134,6 +136,20 @@ export default function SearchScreen({navigation}: Props) {
         keyExtractor={(item, index) => index.toString()}
         data={searchResult}
         renderItem={({item}) => renderSearchReport(item)}
+      />
+      <AuthModal
+        isVisible={visible}
+        onClose={() => setVisible(false)}
+        onEmployeeSelected={e => {
+          if (e.employeeType === 'MEDIC' || e.employeeType === 'TECHNICIAN') {
+            //
+          } else if (e.employeeType === 'OPERATOR') {
+            navigation.reset({
+              index: 1,
+              routes: [{name: 'Auth'}, {name: 'CreateReport'}],
+            });
+          }
+        }}
       />
     </View>
   );
