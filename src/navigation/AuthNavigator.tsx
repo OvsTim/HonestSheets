@@ -10,6 +10,7 @@ import ReportScreen from '../components/screens/ReportScreen';
 import SearchScreen from '../components/screens/SearchScreen';
 import CreateReportScreen from '../components/screens/CreateReportScreen';
 import SearchDriverScreen from '../components/screens/SearchDriverScreen';
+import SearchVehicleScreen from '../components/screens/SearchVehicleScreen';
 
 export type AuthStackParamList = {
   One: undefined;
@@ -23,6 +24,7 @@ export type AuthStackParamList = {
   Search: undefined;
   CreateReport: undefined;
   SearchDriver: undefined;
+  SearchVehicle: undefined;
 };
 
 const Stack = createStackNavigator<AuthStackParamList>();
@@ -74,6 +76,11 @@ export default function AuthNavigator() {
         name="SearchDriver"
         component={SearchDriverScreen}
         options={{title: 'Водители'}}
+      />
+      <Stack.Screen
+        name="SearchVehicle"
+        component={SearchVehicleScreen}
+        options={{title: 'Транспортное средство'}}
       />
     </>
   );

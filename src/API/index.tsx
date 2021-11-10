@@ -202,8 +202,13 @@ export interface DriverFromSearch {
   fullName: string;
 }
 
-export interface DriverSearchResponse {
-  entries: Array<DriverFromSearch>;
+export interface VehicleFromSearch {
+  id: number;
+  shortName: string;
+}
+
+export interface SearchResponse<Type> {
+  entries: Array<Type>;
   pageNum: number;
   total: number;
 }
@@ -359,7 +364,7 @@ export function postTechEdit(
 }
 
 export function getDrivers(token: string, page: number, searchTerm: string) {
-  return axios.get<DriverSearchResponse>(
+  return axios.get<SearchResponse<DriverFromSearch>>(
     base_url + '/employees/drivers/brief',
     {
       headers: {Authorization: token, 'Content-Type': 'application/json'},
@@ -399,4 +404,24 @@ export function createReport(data: CreateReportBody, token: string) {
   return axios.post(base_url + '/waybills', data, {
     headers: {Authorization: token, 'Content-Type': 'application/json'},
   });
+}
+
+export function getVehicles(token: string, page: number, searchTerm: string) {
+  return axios.get<SearchResponse<VehicleFromSearch>>(
+    base_url + '/vehicles/brief',
+    {
+      headers: {Authorization: token, 'Content-Type': 'application/json'},
+      params:
+        searchTerm === ''
+          ? {
+              pageNum: page,
+              pageSize: 10,
+            }
+          : {
+              pageNum: page,
+              pageSize: 10,
+              search: searchTerm,
+            },
+    },
+  );
 }

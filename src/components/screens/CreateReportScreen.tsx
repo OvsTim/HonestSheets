@@ -1,14 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {
-  Alert,
-  Image,
-  Pressable,
-  StatusBar,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
-import {useDispatch} from 'react-redux';
+import {Alert, Image, Pressable, StatusBar, View} from 'react-native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import {useAppDispatch, useSelector} from '../../redux';
 import {AuthStackParamList} from '../../navigation/AuthNavigator';
@@ -16,8 +7,8 @@ import {withPressable} from '../_CustomComponents/HOC/withPressable';
 import {AuthModal} from './AuthModal';
 import BaseInput from '../_CustomComponents/BaseInput';
 import BaseButton from '../_CustomComponents/BaseButton';
-import {DriverFromSearch, getVehicle} from '../../API';
-import {setTempDriver} from '../../redux/UserDataSlice';
+import {DriverFromSearch, VehicleFromSearch} from '../../API';
+import {setTempDriver, setTempVehicle} from '../../redux/UserDataSlice';
 import {
   createReportRequest,
   getLastVehicleIdRequest,
@@ -39,18 +30,17 @@ export default function CreateReportScreen({navigation}: Props) {
   const [visible, setVisible] = useState<boolean>(false);
   const [loading, setLoading] = useState<boolean>(false);
   const [loadingVehicle, setLoadingVehicle] = useState<boolean>(false);
-  const [vehicle, setVehicle] = useState<{id: number; shortName: string}>({
-    id: 0,
-    shortName: '',
-  });
-  const {width} = useWindowDimensions();
+  const vehicle: VehicleFromSearch = useSelector(
+    state => state.data.tempVehicle,
+  );
   const Button = withPressable(View);
 
   React.useEffect(
     () =>
-      navigation.addListener('beforeRemove', e => {
+      navigation.addListener('beforeRemove', _ => {
         {
           dispatch(setTempDriver({id: 0, fullName: ''}));
+          dispatch(setTempVehicle({id: 0, shortName: ''}));
         }
       }),
     [navigation],
@@ -86,20 +76,25 @@ export default function CreateReportScreen({navigation}: Props) {
           if (res) {
             dispatch(getVehicleRequest({token, id: res}))
               .then(unwrapResult)
-              .then(res => {
-                console.log('Vehicle', res);
-                setVehicle({id: res.id, shortName: res.shortName});
+              .then(_vehicle => {
+                console.log('Vehicle', _vehicle);
+                dispatch(
+                  setTempVehicle({
+                    id: _vehicle.id,
+                    shortName: _vehicle.shortName,
+                  }),
+                );
               })
-              .catch(er => {
+              .catch(_ => {
                 setLoadingVehicle(false);
-                Alert.alert('Ошибка', er);
+                // Alert.alert('Ошибка', er);
               });
           } else {
             setLoadingVehicle(false);
-            Alert.alert(
-              'Ошибка',
-              'Не найдена последнее транспортное средство для этого водителя',
-            );
+            // Alert.alert(
+            //   'Ошибка',
+            //   'Не найдена последнее транспортное средство для этого водителя',
+            // );
           }
         })
         .catch(er => {
@@ -133,7 +128,7 @@ export default function CreateReportScreen({navigation}: Props) {
     )
       .then(unwrapResult)
       .then(_ => {
-        setVehicle({id: 0, shortName: ''});
+        dispatch(setTempVehicle({id: 0, shortName: ''}));
         dispatch(setTempDriver({id: 0, fullName: ''}));
         Alert.alert('Сообщение', 'Путевой лист успешно создан');
         setLoading(false);
@@ -154,6 +149,8 @@ export default function CreateReportScreen({navigation}: Props) {
       <Pressable
         onPress={() => {
           dispatch(setTempDriver({id: 0, fullName: ''}));
+          dispatch(setTempVehicle({id: 0, shortName: ''}));
+
           navigation.navigate('SearchDriver');
         }}>
         <BaseInput
@@ -181,11 +178,24 @@ export default function CreateReportScreen({navigation}: Props) {
         )}
       </Pressable>
 
-      <Text style={{width: width - 32, marginVertical: 16}}>
-        {vehicle.shortName
-          ? 'Транспортное средство: ' + vehicle.shortName
-          : 'Транспортное средство: не выбрано'}
-      </Text>
+      <Pressable
+        onPress={() => {
+          dispatch(setTempVehicle({id: 0, shortName: ''}));
+          navigation.navigate('SearchVehicle');
+        }}>
+        <BaseInput
+          value={vehicle.shortName}
+          styleInput={{color: 'black'}}
+          styleContainer={{marginVertical: 16}}
+          editable={false}
+          placeholder={'Транспортное средство'}
+          label={'Транспортное средство'}
+          inputProps={{}}
+          labelStyle={{}}
+          showLabel={true}
+        />
+      </Pressable>
+
       <BaseButton
         loading={loading}
         text={'Создать'}

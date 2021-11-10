@@ -4,6 +4,7 @@ import {handleBaseError} from '../utils/handler';
 import {
   CreateReportBody,
   getLastVehicleId,
+  getVehicles,
   PostMedCreateCheckup,
   PostMedEditCheckup,
   PostTechCreateCheckup,
@@ -282,6 +283,26 @@ export const createReportRequest = createAsyncThunk(
   async (arg: {token: string; data: CreateReportBody}, {rejectWithValue}) => {
     try {
       const response = await API.createReport(arg.data, arg.token);
+      return response.data;
+    } catch (er) {
+      let errorMessage: string = handleBaseError(er);
+      return rejectWithValue(errorMessage);
+    }
+  },
+);
+
+export const getVehiclesRequest = createAsyncThunk(
+  'users/getVehiclesRequest',
+  async (
+    arg: {token: string; page: number; searchTern: string},
+    {rejectWithValue},
+  ) => {
+    try {
+      const response = await API.getVehicles(
+        arg.token,
+        arg.page,
+        arg.searchTern,
+      );
       return response.data;
     } catch (er) {
       let errorMessage: string = handleBaseError(er);
