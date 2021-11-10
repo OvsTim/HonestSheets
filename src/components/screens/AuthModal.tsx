@@ -12,7 +12,7 @@ import React from 'react';
 import {useAppDispatch, useSelector} from '../../redux';
 import {authEmployeeRequest} from '../../redux/thunks';
 import {unwrapResult} from '@reduxjs/toolkit';
-import {setTokenAndEmployee} from '../../redux/UserDataSlice';
+import {setTempDriver, setTokenAndEmployee} from '../../redux/UserDataSlice';
 
 type Props = {
   isVisible: boolean;
@@ -30,6 +30,7 @@ export function AuthModal(props: Props) {
         style={{width, padding: 24}}
         android_ripple={{radius: 200, color: 'gray'}}
         onPress={() => {
+          dispatch(setTempDriver({id: 0, fullName: ''}));
           dispatch(authEmployeeRequest(item.employeeId))
             .then(unwrapResult)
             .then(res => {
