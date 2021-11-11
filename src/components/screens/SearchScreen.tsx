@@ -37,6 +37,7 @@ export default function SearchScreen({navigation}: Props) {
   const {width} = useWindowDimensions();
   const Button = withPressable(View);
   const [visible, setVisible] = useState<boolean>(false);
+  const [searchTerm, setSearchTerm] = useState<string>('');
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
@@ -108,7 +109,7 @@ export default function SearchScreen({navigation}: Props) {
           : 'Должность: ' + currentEmployee.employeeType}
       </Text>
       <ThrottledSearchInput
-        value={''}
+        value={searchTerm}
         onThrottledChange={term => {
           console.log('term', term);
           if (term.trim() !== '') {
@@ -123,7 +124,7 @@ export default function SearchScreen({navigation}: Props) {
             setSearchResult([]);
           }
         }}
-        onTextChanges={term => {}}
+        onTextChanges={term => setSearchTerm(term)}
         styleInput={{}}
         styleContainer={{}}
         editable={true}
@@ -143,6 +144,7 @@ export default function SearchScreen({navigation}: Props) {
         onEmployeeSelected={e => {
           if (e.employeeType === 'MEDIC' || e.employeeType === 'TECHNICIAN') {
             //
+            // setSearchResult([]);
           } else if (e.employeeType === 'OPERATOR') {
             navigation.reset({
               index: 1,
