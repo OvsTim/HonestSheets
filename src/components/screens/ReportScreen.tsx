@@ -3,6 +3,7 @@ import {
   Alert,
   Image,
   Pressable,
+  ScrollView,
   StatusBar,
   Text,
   useWindowDimensions,
@@ -245,8 +246,12 @@ export default function ReportScreen({navigation, route}: Props) {
   }
 
   return (
-    <View
-      style={{flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start'}}>
+    <ScrollView
+      contentContainerStyle={{
+        flex: 1,
+        alignItems: 'flex-start',
+        justifyContent: 'flex-start',
+      }}>
       <StatusBar
         translucent={false}
         backgroundColor={'rgba(0,0,0,0.1)'}
@@ -257,7 +262,7 @@ export default function ReportScreen({navigation, route}: Props) {
       ) : (
         renderReport()
       )}
-    </View>
+    </ScrollView>
   );
   //endregion jsx
 }
