@@ -90,6 +90,8 @@ export default function ReportScreen({navigation, route}: Props) {
           }
           android_ripple={{radius: 200, color: 'gray'}}
           style={{
+            minHeight: 110,
+
             borderTopWidth: type === 'PRE_MED' || type === 'POST_MED' ? 1 : 0,
             borderBottomWidth: 1,
             paddingVertical: 32,
@@ -148,7 +150,7 @@ export default function ReportScreen({navigation, route}: Props) {
           android_ripple={{radius: 200, color: 'gray'}}
           style={{
             borderTopWidth: type === 'PRE_MED' || type === 'POST_MED' ? 1 : 0,
-
+            minHeight: 110,
             borderBottomWidth: 1,
             paddingVertical: 32,
             width,
@@ -180,6 +182,32 @@ export default function ReportScreen({navigation, route}: Props) {
             />
           ) : (
             <View />
+          )}
+          {(type === 'PRE_MED' || type === 'POST_MED') && (
+            <Image
+              style={{
+                position: 'absolute',
+                right: 16,
+                alignSelf: 'center',
+                width: 100,
+                height: 100,
+                zIndex: 0,
+              }}
+              source={require('../../assets/med_passed.png')}
+            />
+          )}
+          {(type === 'PRE_TECH' || type === 'POST_TECH') && (
+            <Image
+              style={{
+                position: 'absolute',
+                right: 16,
+                alignSelf: 'center',
+                width: 110,
+                height: 100,
+                zIndex: 0,
+              }}
+              source={require('../../assets/tech_passed.png')}
+            />
           )}
         </Pressable>
       );
