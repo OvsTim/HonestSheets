@@ -373,13 +373,13 @@ export function getDrivers(token: string, page: number, searchTerm: string) {
           ? {
               pageNum: page,
               pageSize: 10,
-              filters: 'status|ACTIVE',
+              // filters: 'status|ACTIVE',
             }
           : {
               pageNum: page,
               pageSize: 10,
               search: searchTerm,
-              filters: 'status|ACTIVE',
+              // filters: 'status|ACTIVE',
             },
     },
   );

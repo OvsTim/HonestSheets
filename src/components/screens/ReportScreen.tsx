@@ -248,9 +248,10 @@ export default function ReportScreen({navigation, route}: Props) {
   return (
     <ScrollView
       contentContainerStyle={{
-        flex: 1,
+        flexGrow: 1,
         alignItems: 'flex-start',
         justifyContent: 'flex-start',
+        paddingBottom: 100,
       }}>
       <StatusBar
         translucent={false}
