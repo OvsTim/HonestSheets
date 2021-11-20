@@ -100,10 +100,8 @@ export default function SearchScreen({navigation}: Props) {
       <Text style={{width: width - 32, marginVertical: 12}}>
         {currentEmployee.employeeType === 'MEDIC'
           ? 'Должность: Медик'
-          : currentEmployee.employeeId === 148530
-          ? 'Должность: Техник'
           : currentEmployee.employeeType === 'TECHNICIAN'
-          ? 'Должность: Техник 1'
+          ? 'Должность: Техник'
           : currentEmployee.employeeType === 'OPERATOR'
           ? 'Должность: Таксопарк'
           : 'Должность: ' + currentEmployee.employeeType}

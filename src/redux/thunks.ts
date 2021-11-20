@@ -3,8 +3,6 @@ import * as API from '../API';
 import {handleBaseError} from '../utils/handler';
 import {
   CreateReportBody,
-  getLastVehicleId,
-  getVehicles,
   PostMedCreateCheckup,
   PostMedEditCheckup,
   PostTechCreateCheckup,
@@ -31,18 +29,6 @@ export const fetchImages = createAsyncThunk(
   },
 );
 
-export const authRequest = createAsyncThunk(
-  'users/auth',
-  async (_, {rejectWithValue}) => {
-    try {
-      const response = await API.auth();
-      return response.data;
-    } catch (er) {
-      let errorMessage: string = handleBaseError(er);
-      return rejectWithValue(errorMessage);
-    }
-  },
-);
 export const authEmployeeRequest = createAsyncThunk(
   'users/authEmp',
   async (id: number, {rejectWithValue}) => {

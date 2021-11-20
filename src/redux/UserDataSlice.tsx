@@ -1,5 +1,5 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
-import {authRequest, fetchImages, getEmployeeRequest} from './thunks';
+import {fetchImages, getEmployeeRequest} from './thunks';
 import {
   DriverFromSearch,
   Employee,
@@ -27,7 +27,26 @@ const initialState = {
   tempVehicle: {id: 0, shortName: ''},
   images: [],
   currentEmployee: undefined,
-  empList: [],
+  empList: [
+    {
+      employeeId: 238353,
+      employeeType: 'TECHNICIAN',
+      orgName: 'ИП БАЛАБКИНА ГАЛИНА АЛЕКСАНДРОВНА',
+      orgType: 'TECH_ORG',
+    },
+    {
+      employeeId: 223892,
+      employeeType: 'MEDIC',
+      orgName: 'ООО "ЛАЙФ"',
+      orgType: 'MED_ORG',
+    },
+    {
+      employeeId: 230193,
+      employeeType: 'OPERATOR',
+      orgName: 'ИП ЧИСТЯКОВ ВИКТОР ВАСИЛЬЕВИЧ',
+      orgType: 'TAXI_PARK',
+    },
+  ],
   employeeData: {
     organization: {id: 0, type: 'MED_ORG', shortName: ''},
     type: 'MEDIC',
@@ -79,9 +98,6 @@ const dataSlice = createSlice({
   extraReducers: builder => {
     builder.addCase(fetchImages.fulfilled, (state, action) => {
       state.images = action.payload;
-    });
-    builder.addCase(authRequest.fulfilled, (state, action) => {
-      state.empList = action.payload;
     });
     builder.addCase(getEmployeeRequest.fulfilled, (state, action) => {
       state.employeeData = action.payload;

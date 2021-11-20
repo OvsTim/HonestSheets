@@ -266,17 +266,10 @@ export function getImages(url: string) {
   });
 }
 
-export function auth() {
-  let data = new FormData();
-  data.append('msisdn', '9261255865');
-  data.append('password', 'WyM9MyW9');
-  return axios.post<Array<Employee>>(base_url + '/authenticate', data);
-}
-
 export function authEmployee(id: number) {
   let data = new FormData();
-  data.append('msisdn', '9261255865');
-  data.append('password', 'WyM9MyW9');
+  data.append('msisdn', id === 238353 ? '9266440454' : '9261255865');
+  data.append('password', id === 238353 ? '64hSuldQ' : 'WyM9MyW9');
   data.append('employeeId', id.toString());
   return axios.post<{token: string}>(base_url + '/authenticate', data);
 }

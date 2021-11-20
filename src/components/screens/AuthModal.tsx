@@ -37,29 +37,16 @@ export function AuthModal(props: Props) {
               dispatch(setTokenAndEmployee({token: res.token, employee: item}));
               props.onClose();
               setTimeout(() => {
-                // navigation.navigate('Search');
                 props.onEmployeeSelected(item);
               }, 500);
             })
             .catch(er => Alert.alert('Ошибка', er));
         }}>
-        {/*<Text style={{fontSize: 17}}>{item.orgName}</Text>*/}
-        {/*<Text>*/}
-        {/*  {item.orgType === 'TECH_ORG'*/}
-        {/*    ? 'Техцентр'*/}
-        {/*    : item.orgType === 'MED_ORG'*/}
-        {/*    ? 'Мед организация'*/}
-        {/*    : item.orgType === 'TAXI_PARK'*/}
-        {/*    ? 'Таксопарк'*/}
-        {/*    : item.orgType}*/}
-        {/*</Text>*/}
         <Text>
           {item.employeeType === 'MEDIC'
             ? 'Медик'
-            : item.employeeId === 148530
-            ? 'Техник'
             : item.employeeType === 'TECHNICIAN'
-            ? 'Техник 1'
+            ? 'Техник'
             : item.employeeType === 'OPERATOR'
             ? 'Таксопарк'
             : item.employeeType}
