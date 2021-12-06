@@ -266,10 +266,11 @@ export function getImages(url: string) {
   });
 }
 
-export function authEmployee(id: number) {
+export function authEmployee(id: number, password: string) {
   let data = new FormData();
   data.append('msisdn', id === 238353 ? '9266440454' : '9261255865');
-  data.append('password', id === 238353 ? '64hSuldQ' : 'WyM9MyW9');
+  // data.append('password', id === 238353 ? '64hSuldQ' : 'WyM9MyW9');
+  data.append('password', password);
   data.append('employeeId', id.toString());
   return axios.post<{token: string}>(base_url + '/authenticate', data);
 }

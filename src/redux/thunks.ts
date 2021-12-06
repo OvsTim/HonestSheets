@@ -31,9 +31,9 @@ export const fetchImages = createAsyncThunk(
 
 export const authEmployeeRequest = createAsyncThunk(
   'users/authEmp',
-  async (id: number, {rejectWithValue}) => {
+  async (arg: {id: number; pass: string}, {rejectWithValue}) => {
     try {
-      const response = await API.authEmployee(id);
+      const response = await API.authEmployee(arg.id, arg.pass);
       return response.data;
     } catch (er) {
       let errorMessage: string = handleBaseError(er);

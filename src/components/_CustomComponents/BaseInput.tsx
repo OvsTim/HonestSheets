@@ -7,6 +7,8 @@ import {
   TextProps,
   Text,
   TextStyle,
+  Pressable,
+  Image,
 } from 'react-native';
 import {vScale, hScale, window} from '../../utils/scaling';
 
@@ -22,12 +24,15 @@ type Props = {
   labelStyle: TextProps;
   showLabel: boolean;
   inputRef?: Ref<TextInput>;
+  isPassword?: boolean;
 };
 
 export default function BaseInput(props: Props) {
   function handleInput(input: string) {
     props.onTextChanges(input);
   }
+
+  const [isVisible, setIsVisible] = useState<boolean>(false);
 
   function renderLabel() {
     return (
@@ -86,10 +91,26 @@ export default function BaseInput(props: Props) {
         }}
         editable={props.editable}
         {...props.inputProps}
+        secureTextEntry={props.isPassword && !isVisible}
         value={props.value}
         placeholder={props.placeholder}
         underlineColorAndroid={'rgba(0,0,0,0)'}
       />
+      {props.isPassword && (
+        <Pressable
+          onPress={() => setIsVisible(prevState => !prevState)}
+          style={{position: 'absolute', right: 10}}
+          android_ripple={{radius: 200, color: 'gray'}}>
+          <Image
+            style={{width: 40, height: 40}}
+            source={
+              !isVisible
+                ? require('../../assets/outline_visibility_black_24.png')
+                : require('../../assets/outline_visibility_off_black_24.png')
+            }
+          />
+        </Pressable>
+      )}
       {props.showLabel && renderLabel()}
     </View>
   );
@@ -106,4 +127,5 @@ BaseInput.defaultProps = {
   inputProps: {},
   labelStyle: {},
   showLabel: false,
+  isPassword: false,
 };

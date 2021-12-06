@@ -15,6 +15,7 @@ interface User {
   empList: Array<Employee>;
   tempDriver: DriverFromSearch;
   tempVehicle: VehicleFromSearch;
+  passCache: Record<number, string>;
 }
 
 interface dataState extends User {
@@ -47,6 +48,11 @@ const initialState = {
       orgType: 'TAXI_PARK',
     },
   ],
+  passCache: {
+    238353: '',
+    223892: '',
+    230193: '',
+  },
   employeeData: {
     organization: {id: 0, type: 'MED_ORG', shortName: ''},
     type: 'MEDIC',
@@ -91,6 +97,9 @@ const dataSlice = createSlice({
     setTempVehicle(state, action: PayloadAction<VehicleFromSearch>) {
       state.tempVehicle = action.payload;
     },
+    setPassword(state, action: PayloadAction<{id: number; pass: string}>) {
+      state.passCache[action.payload.id] = action.payload.pass;
+    },
     resetAction() {
       return initialState;
     },
@@ -107,6 +116,7 @@ const dataSlice = createSlice({
 
 export const {
   setAuthData,
+  setPassword,
   setTempVehicle,
   setTempDriver,
   setTokenAndEmployee,
